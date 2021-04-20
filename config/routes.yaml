@@ -1,3 +1,6 @@
-#index:
-#    path: /
-#    controller: App\Controller\DefaultController::index
+getMe:
+    path: /getMe
+    controller: App\Telegram\Service\TelegramRequests::getMe
+getUpdates:
+    path: /getUpdates
+    controller: App\Telegram\Service\TelegramRequests::getUpdates
