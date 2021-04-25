@@ -1,6 +1,15 @@
-getMe:
-    path: /getMe
-    controller: App\Telegram\Service\TelegramRequests::getMe
-getUpdates:
-    path: /getUpdates
-    controller: App\Telegram\Service\TelegramRequests::getUpdates
+#getMe:
+#    path: /getMe
+#    controller: App\Telegram\Service\TelegramRequests::getMe
+#getUpdates:
+#    path: /getUpdates
+#    controller: App\Telegram\Service\TelegramRequests::getUpdates
+#setWebhook :
+#    path: /setWebhook
+#    controller: App\Telegram\Service\TelegramRequests::setWebhook
+#deleteWebhook :
+#    path: /deleteWebhook
+#    controller: App\Telegram\Service\TelegramRequests::deleteWebhook
+#getWebhookInfo :
+#    path: /getWebhookInfo
+#    controller: App\Telegram\Service\TelegramRequests::getWebhookInfo

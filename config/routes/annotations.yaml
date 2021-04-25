@@ -1,0 +1,10 @@
+controllers:
+    resource: ../../src/Telegram/
+    type: annotation
+
+kernel:
+    resource: ../../src/Kernel.php
+    type: annotation
+hooks:
+    resource: ../../src/App
+    type: annotation
