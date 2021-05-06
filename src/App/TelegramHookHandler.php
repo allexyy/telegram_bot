@@ -19,7 +19,6 @@ class TelegramHookHandler extends AbstractController
      */
     public function index(Request $request, MessageBusInterface $bus)
     {
-//        file_put_contents('log_1.log', $request->getContent());
         $bus->dispatch(new ChatMessages($request->getContent()));
         return new JsonResponse('ok');
     }

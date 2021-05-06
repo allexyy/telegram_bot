@@ -16,7 +16,7 @@ class ClientFactory
     {
         return $this->client =  new ClientManager(
             [
-                'base_uri' => 'https://api.telegram.org',
+                'base_uri' => 'https://api.telegram.org/bot',
                 'Content-Type' => 'application/json',
             ]
         );

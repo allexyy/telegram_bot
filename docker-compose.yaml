@@ -1,0 +1,65 @@
+version: "3.7"
+
+x-php_template: &x-php_template
+  restart: always
+  build:
+    context: ./
+    target: php
+  image: alexyy-tg-php:latast
+  depends_on:
+    - db
+  volumes:
+    - ./var:/srv/var:rw,cached
+    - .env:/srv/.env:rw,cached
+
+services:
+  php:
+    <<: *x-php_template
+
+  nginx:
+    restart: always
+    build:
+      context: ./
+      target: nginx
+    image: alexyy-tg-nginx:latest
+    ports:
+      - target: 80
+        published: 80
+        protocol: tcp
+    depends_on:
+      - php
+
+  db:
+    # Требуется при разработке на м1
+    platform: linux/amd64
+    restart: always
+    image: mysql:8
+    ports:
+      - target: 3306
+        published: 3306
+        protocol: tcp
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: $DB_DATABASE
+      MYSQL_USER: $DB_USERNAME
+      MYSQL_PASSWORD: $DB_PASSWORD
+  ngrok:
+    restart: always
+    image: wernight/ngrok
+    links:
+      - nginx
+    environment:
+      - NGROK_DEBUG=true
+      - NGROK_BINDTLS=true
+      - NGROK_PROTOCOL=HTTP
+      # Все запросы будут перенаправлены в services.nginx
+      - NGROK_LOOK_DOMAIN=nginx
+      # Авторизация в ngrok
+      # @see docs/ngrok.md
+      - NGROK_AUTH=${NGROK_AUTH:-}
+    ports:
+      - target: 4040
+        published: 4040
+        protocol: tcp
+    depends_on:
+      - nginx

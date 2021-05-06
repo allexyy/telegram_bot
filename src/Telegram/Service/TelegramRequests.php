@@ -68,13 +68,23 @@ class TelegramRequests
      * @return JsonResponse
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function sendMessage()
+    public function sendMessage(array $data)
     {
         $response = $this->manager->request('POST',"/bot{$_ENV['TELEGRAM_TOKEN']}/sendMessage", [
-            'json' => [
-                'chat_id' => 366955299,
-                'text' => 'Bot message'
-            ]
+            'json' => $data
+        ]);
+        return new JsonResponse(json_decode($response->getBody()->getContents()));
+    }
+
+    /**
+     * @Route ("/sendPhoto")
+     * @return JsonResponse
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function sendPhoto(array $data)
+    {
+        $response = $this->manager->request('POST',"/bot{$_ENV['TELEGRAM_TOKEN']}/sendPhoto", [
+            'json' => $data
         ]);
         return new JsonResponse(json_decode($response->getBody()->getContents()));
     }

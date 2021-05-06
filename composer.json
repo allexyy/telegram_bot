@@ -4,7 +4,7 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "php": ">=7.2.5",
+        "php": "^7.2.5||^8",
         "ext-ctype": "*",
         "ext-iconv": "*",
         "doctrine/annotations": "^1.12",
@@ -15,6 +15,7 @@
         "symfony/framework-bundle": "5.2.*",
         "symfony/messenger": "5.2.*",
         "symfony/monolog-bundle": "^3.7",
+        "symfony/property-access": "5.2.*",
         "symfony/yaml": "5.2.*",
         "telegram-bot/api": "^2.3"
     },

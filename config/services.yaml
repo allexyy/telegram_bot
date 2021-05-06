@@ -34,6 +34,12 @@ services:
     App\Telegram\Service\ClientManager:
         class: App\Telegram\Factory\ClientFactory
         factory: '@App\Telegram\Factory\ClientFactory'
+    # ValueObject
+    App\Telegram\ValueObject\ChatMessage:
+        arguments:
+            $chatId : "%chatId%"
+
+
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
