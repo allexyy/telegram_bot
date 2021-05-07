@@ -10,8 +10,6 @@ use App\Telegram\ValueObject\PhotoData;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
-use TelegramBot\Api\HttpException;
-use Throwable;
 
 final class ChatMessagesHandler implements MessageHandlerInterface, LoggerAwareInterface
 {
@@ -36,15 +34,18 @@ final class ChatMessagesHandler implements MessageHandlerInterface, LoggerAwareI
                 $chatId,
                 $text,
                 $action);
-        } else{
-            try {
-                $chatId = $data['message']['chat']['id'];
-                $text = $data['message']['text'];
-                $chatMessage = new ChatMessage($chatId, $text);
-            } catch (Throwable $exception){
-                $this->logger->error($exception->getMessage());
-                throw new HttpException($exception->getMessage());
-            }
+        }
+        elseif (isset($data['my_chat_member'])){
+            $chatMessage = new ChatMessage(
+                $data['my_chat_member']['chat']['id'],
+                'Sorry something went wrong');
+            return $this->requests->sendMessage(
+                MessageData::getData($chatMessage,'Прости, но я не знаю как на это ответить'));
+        }
+        else{
+            $chatId = $data['message']['chat']['id'];
+            $text = $data['message']['text'];
+            $chatMessage = new ChatMessage($chatId, $text);
         }
 
         //TODO: Добавляем ветвление на (/start, показать еще, заказать, как мерить ?)
@@ -58,11 +59,11 @@ final class ChatMessagesHandler implements MessageHandlerInterface, LoggerAwareI
         if ($chatMessage->getAction() === "measurements"){
             $this->requests->sendMessage(
                 MessageData::getData($chatMessage, 'Снять мерки очень просто....'));
-            return $this->requests->sendPhoto(PhotoData::getData($chatMessage));
+            return $this->requests->sendPhoto(PhotoData::getData($chatMessage, true));
         }
-        if ($chatMessage->getAction() === "order"){
+        if ($chatMessage->getAction() === "show"){
             return $this->requests->sendMessage(
-                MessageData::getData($chatMessage, 'Отлично !!! Пришли пожалуйста замеры'));
+                MessageData::getData($chatMessage, 'Посмотреть примеры работ ты можешь в Instagram: https://www.instagram.com/si_li_lingerie'));
         }
 
         return $this->requests->sendMessage(

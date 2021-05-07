@@ -29,7 +29,7 @@ class ChatMessage
 
     public function getAction()
     {
-        return $this->data['action'];
+        return $this->data['action'] ?? null;
     }
 
     /**

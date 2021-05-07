@@ -19,6 +19,9 @@ class TelegramHookHandler extends AbstractController
      */
     public function index(Request $request, MessageBusInterface $bus)
     {
+        if (null === $request->getContent() || $request->getContent() === ''){
+            return new JsonResponse('Empty response',204);
+        }
         $bus->dispatch(new ChatMessages($request->getContent()));
         return new JsonResponse('ok');
     }
