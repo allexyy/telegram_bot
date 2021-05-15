@@ -8,6 +8,7 @@ x-php_template: &x-php_template
   image: alexyy-tg-php:latast
   depends_on:
     - db
+    - rabbitmq
   volumes:
     - ./var:/srv/var:rw,cached
     - .env:/srv/.env:rw,cached
@@ -43,6 +44,18 @@ services:
       MYSQL_DATABASE: $DB_DATABASE
       MYSQL_USER: $DB_USERNAME
       MYSQL_PASSWORD: $DB_PASSWORD
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - ./docker/rabbitmq/etc/definitions.json:/etc/rabbitmq/definitions.json
+      - ./docker/rabbitmq/etc/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+      - ./docker/rabbitmq/data:/var/lib/rabbitmq/mnesia/rabbit@my-rabbit
+      - ./docker/rabbitmq/logs:/var/log/rabbitmq/log
+
   ngrok:
     restart: always
     image: wernight/ngrok

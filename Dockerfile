@@ -1,4 +1,4 @@
-ARG PHP_VERSION=8
+ARG PHP_VERSION=8.0
 ARG NGINX_VERSION=1.19.3
 ARG COMPOSER_VERSION=2.0.6
 
@@ -6,6 +6,14 @@ FROM composer:${COMPOSER_VERSION} AS composer_stage
 
 # "php" stage
 FROM php:${PHP_VERSION}-fpm-alpine AS php
+
+ENV EXT_AMQP_VERSION=master
+
+RUN docker-php-source extract \
+    && apk -Uu add git rabbitmq-c-dev \
+    && git clone --branch $EXT_AMQP_VERSION --depth 1 https://github.com/php-amqp/php-amqp.git /usr/src/php/ext/amqp \
+    && cd /usr/src/php/ext/amqp && git submodule update --init \
+    && docker-php-ext-install amqp
 
 ## Composer
 COPY --from=composer_stage /usr/bin/composer /usr/bin/composer

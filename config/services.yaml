@@ -38,6 +38,9 @@ services:
     App\Telegram\ValueObject\ChatMessage:
         arguments:
             $chatId : "%chatId%"
+    # MessageHandler
+#    App\MessageHandler\ChatMessagesHandler:
+#        tags: [messenger.message_handler]
 
 
 
