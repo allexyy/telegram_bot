@@ -13,5 +13,5 @@ docker-compose build && docker-compose up -d
 ```
 Для просмотра логов используй
 ```
-docker-compose exec php bin/console messenger:consume -vv 
+docker-compose logs -f consumer 
 ```
