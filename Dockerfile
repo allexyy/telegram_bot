@@ -7,6 +7,7 @@ FROM composer:${COMPOSER_VERSION} AS composer_stage
 # "php" stage
 FROM php:${PHP_VERSION}-fpm-alpine AS php
 
+# Add AMQP
 ENV EXT_AMQP_VERSION=master
 
 RUN docker-php-source extract \
@@ -24,13 +25,13 @@ ENV COMPOSER_ALLOW_SUPERUSER=1
 WORKDIR /srv
 
 # build for production
-ARG APP_ENV=production
+#ARG APP_ENV=production
 ### prevent the reinstallation of vendors at every changes in the source code
 COPY composer.json composer.lock ./
 
 RUN set -eux; \
     composer check-platform-reqs; \
-    composer install --no-dev --prefer-dist --no-dev --no-scripts --no-progress --no-suggest; \
+    composer install; \
     composer clear-cache
 
 ### copy source files
@@ -41,7 +42,7 @@ COPY src src/
 
 ### Finish composer install
 RUN set -eux; \
-    composer dump-autoload --classmap-authoritative --no-dev
+    composer dump-autoload --classmap-authoritative
 ### Setup entrypoint
 COPY docker/php/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
 RUN chmod +x /usr/local/bin/docker-entrypoint

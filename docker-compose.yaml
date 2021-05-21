@@ -30,6 +30,11 @@ services:
     depends_on:
       - php
 
+  consumer:
+    # Команда для запуска обработки очереди
+    command: composer run consume
+    <<: *x-php_template
+
   db:
     # Требуется при разработке на м1
     platform: linux/amd64

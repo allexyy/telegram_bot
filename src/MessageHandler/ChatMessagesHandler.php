@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\MessageHandler;
 
 use App\Message\ChatMessages;
+use App\Telegram\Service\ChatMessageFiller;
 use App\Telegram\Service\TelegramRequests;
-use App\Telegram\ValueObject\ChatMessage;
 use App\Telegram\ValueObject\MessageData;
 use App\Telegram\ValueObject\PhotoData;
 use Psr\Log\LoggerAwareInterface;
@@ -14,38 +16,23 @@ use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 final class ChatMessagesHandler implements MessageHandlerInterface, LoggerAwareInterface
 {
     private TelegramRequests $requests;
+    private ChatMessageFiller $filler;
 
     use LoggerAwareTrait;
 
-    public function __construct(TelegramRequests $requests)
+    public function __construct(TelegramRequests $requests, ChatMessageFiller $filler)
     {
         $this->requests  = $requests;
+        $this->filler    = $filler;
     }
 
     public function __invoke(ChatMessages $message)
     {
-        $data = json_decode($message->getContent(), true);
-        //TODO: Использовать стратегии
-        if (isset($data['callback_query'])){
-            $chatId = $data['callback_query']['message']['chat']['id'];
-            $text = $data['callback_query']['message']['text'];
-            $action = $data['callback_query']['data'];
-            $chatMessage = new ChatMessage(
-                $chatId,
-                $text,
-                $action);
-        }
-        elseif (isset($data['my_chat_member'])){
-            $chatMessage = new ChatMessage(
-                $data['my_chat_member']['chat']['id'],
-                'Sorry something went wrong');
+        $chatMessage = $this->filler->fill($message);
+
+        if (!$chatMessage){
             return $this->requests->sendMessage(
-                MessageData::getData($chatMessage,'Прости, но я не знаю как на это ответить'));
-        }
-        else{
-            $chatId = $data['message']['chat']['id'];
-            $text = $data['message']['text'];
-            $chatMessage = new ChatMessage($chatId, $text);
+                MessageData::getData($chatMessage,'HMMM..... OK'));
         }
 
         //TODO: Добавляем ветвление на (/start, показать еще, заказать, как мерить ?)

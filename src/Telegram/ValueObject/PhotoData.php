@@ -10,7 +10,7 @@ class PhotoData
     {
         $data = [
             'chat_id' => $message->getChatId(),
-            'photo'   => 'https://1fb9414fa409.ngrok.io/images/measurement.jpeg' ];
+            'photo'   => "{$_ENV['HOST']}/images/measurement.jpeg" ];
         if ($keyboard){
             $data['reply_markup'] = [
                 'inline_keyboard' =>[ [

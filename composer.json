@@ -42,6 +42,7 @@
         "symfony/polyfill-php72": "*"
     },
     "scripts": {
+        "consume": " php bin/console messenger:consume -vv ",
         "auto-scripts": {
             "cache:clear": "symfony-cmd",
             "assets:install %PUBLIC_DIR%": "symfony-cmd"
